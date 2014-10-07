@@ -36,17 +36,20 @@ class Alignment:
                         else:
                             score = self.mismatch
                         left = self.alignment_matrix[i][j-1] + self.indel
-                        upper = self.alignment_matrix[i-1][j-1] + self.indel
+                        upper = self.alignment_matrix[i-1][j] + self.indel
                         diagonal = self.alignment_matrix[i-1][j-1] + score
                         optimal_choice = max([left, upper, diagonal])
                         self.alignment_matrix[i][j] = optimal_choice
                         self.trace_back_matrix[i,j]=[]
+                        path = []
                         if optimal_choice == left:
-                            self.trace_back_matrix[i,j] += [[i,j-1]]
+                            path.append("LEFT")
                         if optimal_choice == upper:
-                            self.trace_back_matrix[i,j] += [[i-1,j]]
+                            path.append("UPPER")
                         if optimal_choice == diagonal:
-                            self.trace_back_matrix[i,j] += [[i-1,j-1]]
+                            path.append("DIAGONAL")
+
+                        self.trace_back_matrix[i,j] = path
                         print ""
                     else:
                         print "Skipping first column"
@@ -56,6 +59,18 @@ class Alignment:
     def report_optimal_score(self):
         print self.alignment_matrix
         print self.alignment_matrix[len(self.seq1)][len(self.seq2)]
+
+
+
+
+
+
+
+
+
+
+
+
 
     #def report_number_solutions(self):
     #
