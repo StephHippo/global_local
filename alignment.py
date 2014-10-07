@@ -16,10 +16,10 @@ class Alignment:
         i = 0
         j = 0
         for slot in self.alignment_matrix[0]:
-            self.alignment_matrix[0][i] = self.mismatch * i
+            self.alignment_matrix[0][i] = self.indel * i
             i = i + 1
         for slot in self.alignment_matrix:
-            self.alignment_matrix[j][0] = self.mismatch * j
+            self.alignment_matrix[j][0] = self.indel * j
             j = j + 1
 
     def global_align(self):
@@ -29,24 +29,27 @@ class Alignment:
                 for j,element in enumerate(row):
                     if j!= 0:
                         score = 0
+                        print self.seq1[i-1]
+                        print self.seq2[j-1]
                         if self.seq1[i-1] == self.seq2[j-1]:
                             score = self.match
                         else:
                             score = self.mismatch
-                        left = self.alignment_matrix[i][j-1] + score
-                        upper = self.alignment_matrix[i-1][j] + score
+                        left = self.alignment_matrix[i][j-1] + self.indel
+                        upper = self.alignment_matrix[i-1][j-1] + self.indel
                         diagonal = self.alignment_matrix[i-1][j-1] + score
-                        final_choice = max([left, upper, diagonal])
-                        self.alignment_matrix[i][j] = final_choice
+                        optimal_choice = max([left, upper, diagonal])
+                        self.alignment_matrix[i][j] = optimal_choice
                         self.trace_back_matrix[i,j]=[]
-                        if final_choice == left:
+                        if optimal_choice == left:
                             self.trace_back_matrix[i,j] += [[i,j-1]]
-                        if final_choice == upper:
+                        if optimal_choice == upper:
                             self.trace_back_matrix[i,j] += [[i-1,j]]
-                        if final_choice == diagonal:
+                        if optimal_choice == diagonal:
                             self.trace_back_matrix[i,j] += [[i-1,j-1]]
+                        print ""
                     else:
-                        print "Skipping first row"
+                        print "Skipping first column"
             else:
                 print "Skipping first row"
 
