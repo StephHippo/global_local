@@ -106,12 +106,12 @@ class Alignment:
             else:
                 print "Skipping first row"
 
-    def single_solution_trace_back(self):
+    def single_global_solution_trace_back(self):
         i = len(self.seq1)
         j = len(self.seq2)
         alnseq1=""
         alnseq2=""
-        while i>0 or j>0:
+        while i>0 and j>0:
             if self.trace_back_matrix[i,j] == 0:   #diagonal
                 alnseq1= alnseq1 + self.seq1[i-1]
                 alnseq2= alnseq2 + self.seq2[j-1]
@@ -126,6 +126,28 @@ class Alignment:
                 alnseq2= alnseq2 + "-"
                 i = i -1
         return "\n" + alnseq1[::-1] +"\n"+ alnseq2[::-1]
+
+    def single_local_solution_trace_back(self):
+        i = len(self.seq1)-1
+        j = len(self.seq2)-1
+        alnseq1=""
+        alnseq2=""
+        while i>0 and j>0:
+            if self.trace_back_matrix[i,j] == 0:   #diagonal
+                alnseq1= alnseq1 + self.seq1[i-1]
+                alnseq2= alnseq2 + self.seq2[j-1]
+                i = i - 1
+                j = j - 1
+            elif self.trace_back_matrix[i,j] == -1: #left
+                alnseq1=alnseq1 + "-"
+                alnseq2=alnseq2 + self.seq2[j-1]
+                j = j-1
+            else:                                 #up
+                alnseq1= alnseq1 + self.seq1[i-1]
+                alnseq2= alnseq2 + "-"
+                i = i -1
+        return "\n" + alnseq1[::-1] +"\n"+ alnseq2[::-1]
+
 
     def report_optimal_score(self):
         print "Alignment Matrix"
@@ -179,11 +201,11 @@ class Alignment:
                 elif step == 1: #up
                     seq1align = self.seq1[i] + seq1align
                     seq2align = "-" + seq2align
-                    self.solutions += multi_traceback(self,seq1align,seq2align,i,j-1)
-                elif step == 0:
+                    self.solutions += multi_traceback(self,seq1align,seq2align,i-1,j)
+                elif step == 0: #diagonal
                     seq1align = self.seq1[i] + seq1align
                     seq2align = "-" + seq2align
-                    self.solutions += multi_traceback(self,seq1align,seq2align,i,j-1)
+                    self.solutions += multi_traceback(self,seq1align,seq2align,i-1,j-1)
                 else:
                     seq1align = self.seq1[i] + seq1align
                     seq2align = "-" + seq2align
