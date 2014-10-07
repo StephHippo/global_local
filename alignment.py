@@ -10,7 +10,6 @@ class Alignment:
         self.seq2 = seq2
         self.alignment_matrix = numpy.zeros((len(seq1)+1,len(seq2)+1))
         self.trace_back_matrix = numpy.zeros((len(seq1)+1,len(seq2)+1))
-        #self.trace_back_matrix = {}
         self.optimal_solution_count = 0
 
     def initialize_alignment_matrices(self):
@@ -38,8 +37,6 @@ class Alignment:
                 for j,element in enumerate(row):
                     if j!= 0:
                         score = 0
-                        print self.seq1[i-1]
-                        print self.seq2[j-1]
                         if self.seq1[i-1] == self.seq2[j-1]:
                             score = self.match
                         else:
@@ -68,21 +65,21 @@ class Alignment:
         alnseq1=""
         alnseq2=""
         while i>0 or j>0:
-            if self.trace_back_matrix[i,j]==0:
-                alnseq1=alnseq1 + self.seq1[i-1]
-                alnseq2=alnseq2 + self.seq2[j-1]
+            if self.trace_back_matrix[i,j]== 0:
+                alnseq1= alnseq1 + self.seq1[i-1]
+                alnseq2= alnseq2 + self.seq2[j-1]
                 i = i - 1
                 j = j - 1
-            elif self.trace_back_matrix[i,j]==1:
-                alnseq1=alnseq1 + self.seq1[i-1]
-                alnseq2=alnseq2 +"-"
-                i = i -1
             elif self.trace_back_matrix[i,j]==-1:
+                alnseq1= alnseq1 + self.seq1[i-1]
+                alnseq2= alnseq2 + "-"
+                i = i -1
+            else:
                 alnseq1=alnseq1 + "-"
                 alnseq2=alnseq2 + self.seq2[j-1]
                 j = j-1
-        print alnseq1
-        print alnseq2
+        print alnseq1[::-1]
+        print alnseq2[::-1]
 
     def report_optimal_score(self):
         print "Alignment Matrix"
