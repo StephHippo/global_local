@@ -32,7 +32,7 @@ class Alignment:
             self.trace_back_matrix[j][0] = self.indel * j
             j = j + 1
 
-    def global_align(self):
+    def global_single_align(self):
         self.initialize_global_alignment_matrices()
         for i,row in enumerate(self.alignment_matrix):
             if i != 0:
@@ -48,19 +48,12 @@ class Alignment:
                         diagonal = self.alignment_matrix[i-1][j-1] + score
                         optimal_choice = max([left, upper, diagonal])
                         self.alignment_matrix[i][j] = optimal_choice
-                        path = []
                         if optimal_choice == left:
-                            path+= [-1]
-                        if optimal_choice == upper:
-                            path += [1]
-                        if optimal_choice == diagonal:
-                            path += [0]
-                        self.trace_back_hash[i,j]=path                        #if optimal_choice == left:
-                        #    self.trace_back_matrix[i,j] = -1
-                        #elif optimal_choice == upper:
-                        #    self.trace_back_matrix[i,j] = 1
-                        #elif optimal_choice == diagonal:
-                        #    self.trace_back_matrix[i,j] = 0
+                            self.trace_back_matrix[i,j] = -1
+                        elif optimal_choice == upper:
+                            self.trace_back_matrix[i,j] = 1
+                        elif optimal_choice == diagonal:
+                            self.trace_back_matrix[i,j] = 0
                         print "M"
                     else:
                         print "Skipping first column"
@@ -70,15 +63,12 @@ class Alignment:
     def get_total_optimal_alignments(self):
         return "{0}".format(self.optimal_solution_count)
 
-
-
-
     def get_optimal_score(self):
         rows = len(self.alignment_matrix)
         cols = len(self.alignment_matrix[0])
         return "{0}".format(self.alignment_matrix[rows-1][cols-1])
 
-    def local_align(self):
+    def local_single_align(self):
         self.seq1 = " " + self.seq1
         self.seq2 = " " + self.seq2
         for i,row in enumerate(self.alignment_matrix):
@@ -135,8 +125,7 @@ class Alignment:
                 alnseq1= alnseq1 + self.seq1[i-1]
                 alnseq2= alnseq2 + "-"
                 i = i -1
-        print alnseq1[::-1]
-        print alnseq2[::-1]
+        return "\n" + alnseq1[::-1] +"\n"+ alnseq2[::-1]
 
     def report_optimal_score(self):
         print "Alignment Matrix"
@@ -149,7 +138,7 @@ class Alignment:
         print self.alignment_matrix[rows-1][cols-1]
         print self.trace_back_hash
 
-    def multi_global_align(self):
+    def global_multi_align(self):
         self.initialize_global_alignment_matrices()
         for i,row in enumerate(self.alignment_matrix):
             if i != 0:
@@ -167,11 +156,12 @@ class Alignment:
                         self.alignment_matrix[i][j] = optimal_choice
                         path = []
                         if optimal_choice == left:
-                            self.trace_back_matrix[i,j] = -1
-                        elif optimal_choice == upper:
-                            self.trace_back_matrix[i,j] = 1
-                        elif optimal_choice == diagonal:
-                            self.trace_back_matrix[i,j] = 0
+                            path+= [-1]
+                        if optimal_choice == upper:
+                            path += [1]
+                        if optimal_choice == diagonal:
+                            path += [0]
+                        print "M"
                     else:
                         print "Skipping first column"
             else:
