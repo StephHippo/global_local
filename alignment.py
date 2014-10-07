@@ -1,5 +1,6 @@
 __author__ = 'stephaniehippo'
 import numpy
+from solution import Solution
 class Alignment:
 
     def __init__(self, match, mismatch, indel, seq1, seq2):
@@ -59,25 +60,25 @@ class Alignment:
             else:
                 print "Skipping first row"
 
-    def trace_back(self):
+    def single_solution_trace_back(self):
         i = len(self.seq1)
         j = len(self.seq2)
         alnseq1=""
         alnseq2=""
         while i>0 or j>0:
-            if self.trace_back_matrix[i,j]== 0:
+            if self.trace_back_matrix[i,j] == 0:   #diagonal
                 alnseq1= alnseq1 + self.seq1[i-1]
                 alnseq2= alnseq2 + self.seq2[j-1]
                 i = i - 1
                 j = j - 1
-            elif self.trace_back_matrix[i,j]==-1:
-                alnseq1= alnseq1 + self.seq1[i-1]
-                alnseq2= alnseq2 + "-"
-                i = i -1
-            else:
+            elif self.trace_back_matrix[i,j] == -1: #left
                 alnseq1=alnseq1 + "-"
                 alnseq2=alnseq2 + self.seq2[j-1]
                 j = j-1
+            else:                                 #up
+                alnseq1= alnseq1 + self.seq1[i-1]
+                alnseq2= alnseq2 + "-"
+                i = i -1
         print alnseq1[::-1]
         print alnseq2[::-1]
 
@@ -88,52 +89,4 @@ class Alignment:
         print self.trace_back_matrix
         print "Score"
         print self.alignment_matrix[len(self.seq1)][len(self.seq2)]
-        self.trace_back()
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #def report_number_solutions(self):
-    #
-    #
-    #def report_traceback(self):
-    #    #start at bottom right corner
-    #    i=len(self.seq1)
-    #    j=len(self.seq2)
-    #    solutions = {}
-    #
-    #    solution_string_seq1 = ""
-    #    solution_string_seq2 = ""
-    #    while i > 0 and j > 0:
-    #        #now we have an array of pairs from which the matrix came from
-    #        steps = self.trace_back_matrix[i][j]
-    #        if len(steps) == 1:
-    #            pair = steps[0]
-    #            #if it was diagonal (match) print letter
-    #            if pair[0] == i - 1 and pair[1] == j-1:
-    #                solution_string_seq1 = seq1[j] + solution_string_seq1
-    #                solution_string_seq2 = seq2[i] + solution_string_seq2
-    #            #if it was left print dash for seq1 and letter for seq2
-    #            elif: pair[0] == i - 1
-    #                solution_string_seq1 = "-" + solution_string_seq1
-    #                solution_string_seq2 = seq2[i] + solution_string_seq2
-    #            #if it was up print dash for seq1 and letter for seq2
-    #            elif: pair[1] == j-1
-    #                solution_string_seq1 = seq1[j] + solution_string_seq1
-    #                solution_string_seq2 = "-" + solution_string_seq2
-    #            else:
-    #                print "Traceback doesn't actually work."
-    #            i = pair[0]
-    #            j = pair[1]
-    #        else:
-    #            self.optimal_solution_count = self.count + len(steps)
-    #            for pair in steps:
+        self.single_solution_trace_back()
